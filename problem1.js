@@ -1,60 +1,73 @@
-// you can write to stdout for debugging purposes, e.g.
-// console.log('this is a debug message');
+/**
+ * 트리를 따라 길이가 3이 되는 조합의 개수 찾기 (중복 제외)
+ */
+
+// const T = {
+// 	x: 9,
+// 	l: {
+// 		x: 9,
+// 		l: { x: 2, l: null, r: null },
+// 		r: { x: 9, l: null, r: null },
+// 	},
+// 	r: {
+// 		x: 5,
+// 		l: {
+// 			x: 9,
+// 			l: {
+// 				x: 5,
+// 				l: null,
+// 				r: { x: 9, l: null, r: null },
+// 			},
+// 			r: { x: 9, l: null, r: null },
+// 		},
+// 		r: { x: 9, l: null, r: null },
+// 	},
+// };
 const T = {
-	x: 9,
+	x: 1,
 	l: {
-		x: 9,
-		l: { x: 2, l: null, r: null },
+		x: 2,
+		l: { x: 5, l: { x: 3, l: null, r: null }, r: null },
 		r: { x: 9, l: null, r: null },
 	},
 	r: {
-		x: 5,
-		l: {
-			x: 9,
-			l: {
-				x: 5,
-				l: null,
-				r: { x: 9, l: null, r: null },
-			},
-			r: { x: 9, l: null, r: null },
-		},
-		r: { x: 9, l: null, r: null },
+		x: 7,
+		l: { x: 4, l: null, r: null },
+		r: null,
 	},
 };
 
 function solution(T) {
-	// Implement your solution here
-	const nodes = [];
+	const result = new Set(); // 중복 방지를 위한 Set 활용
 
-	function getNode(x) {
-		if (!x) return;
-		nodes.push(x);
+	// 스택 초기화: [노드, 경로]
+	const que = [{ node: T, path: [] }];
 
-		if (x.l) getNode(x.l);
-		if (x.r) getNode(x.r);
-	}
+	while (que.length > 0) {
+		const { node, path } = que.shift();
 
-	getNode(T);
+		// 현재 경로 업데이트
+		let curPath = [...path, node.x];
 
-	const arr = [];
-	for (const headNode of nodes) {
-		const stack = [[headNode, []]];
+		// 길이가 3인 경로를 찾으면 추가
+		if (curPath.length === 3) {
+			result.add(curPath.join(""));
+			curPath.shift();
+		}
 
-		while (stack.length > 0) {
-			const [node, path] = stack.shift();
-			const curPath = [...path, node.x];
-			if (curPath.length == 3) {
-				arr.push(curPath.join(""));
-				continue;
-			}
+		// 왼쪽 자식
+		if (node.l) {
+			que.push({ node: node.l, path: curPath });
+		}
 
-			if (node.l) stack.push([node.l, curPath]);
-			if (node.r) stack.push([node.r, curPath]);
+		// 오른쪽 자식
+		if (node.r) {
+			que.push({ node: node.r, path: curPath });
 		}
 	}
 
-	const result = Array.from(new Set(arr));
-	return result.length;
+	console.log(Array.from(result)); // 디버그 출력
+	return result.size; // 중복 제거된 경로의 수
 }
 
 console.log(solution(T));
