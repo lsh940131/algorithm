@@ -31,27 +31,25 @@ function solution(friends, gifts) {
 	var answer = 0;
 
 	// 초기화
-	const logMap = {}; // 선물을 주고 받은 기록 및 선물지수 계산용 맵, {친구 이름: {준 기록: {친구이름: 개수, ...}, 받은 기록: {친구이름: 개수, ...}, 선물지수: 0}}
+	const logMap = {}; // 선물을 주고 받은 기록 및 선물지수 계산용 맵, {친구 이름: {준 기록: {친구이름: 개수, ...}, 선물지수: 0}}
 	const expectMap = {}; // 기대 선물 개수 맵, {받을 친구 이름: 개수}
 	for (const f of friends) {
-		logMap[f] = { give: {}, take: {}, point: 0 };
+		logMap[f] = { give: {}, point: 0 };
 		expectMap[f] = 0;
 	}
 
-	// 지난 선물 기록
+	// 선물 기록
 	for (const g of gifts) {
 		const [giver, taker] = g.split(" ");
 
-		// 준 기록
+		// 선물을 준 친구
 		const giveFriend = logMap[giver];
 		if (!giveFriend.give[taker]) giveFriend.give[taker] = 1;
 		else giveFriend.give[taker]++;
 		giveFriend.point++;
 
-		// 받은 기록
+		// 선물을 받은 친구
 		const takeFriend = logMap[taker];
-		if (!takeFriend.take[giver]) takeFriend.take[giver] = 1;
-		else takeFriend.take[giver]++;
 		takeFriend.point--;
 	}
 
